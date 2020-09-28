@@ -83,8 +83,6 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     public function create(CanResetPasswordContract $user)
     {
-        $email = $user->getEmailForPasswordReset();
-
         $this->deleteExisting($user);
 
         // We will create a new, random token for the user so that we can e-mail them
@@ -92,7 +90,9 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
         // the database so that we can verify the token within the actual reset.
         $token = $this->createNewToken();
 
-        $this->getTable()->insert($this->getPayload($email, $token));
+        $this->getTable()->insert($this->getPayload(
+            $user->getLoginIdentifierName(), $user->getLoginIdentifier(), $token
+        ));
 
         return $token;
     }
@@ -105,19 +105,22 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     protected function deleteExisting(CanResetPasswordContract $user)
     {
-        return $this->getTable()->where('email', $user->getEmailForPasswordReset())->delete();
+        return $this->getTable()->where(
+            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
+        )->delete();
     }
 
     /**
      * Build the record payload for the table.
      *
-     * @param  string  $email
+     * @param  string  $identifierName
+     * @param  string  $identifier
      * @param  string  $token
      * @return array
      */
-    protected function getPayload($email, $token)
+    protected function getPayload($identifierName, $identifier, $token)
     {
-        return ['email' => $email, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+        return [$identifierName => $identifier, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
     }
 
     /**
@@ -130,7 +133,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     public function exists(CanResetPasswordContract $user, $token)
     {
         $record = (array) $this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
+            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
         )->first();
 
         return $record &&
@@ -158,7 +161,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     public function recentlyCreatedToken(CanResetPasswordContract $user)
     {
         $record = (array) $this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
+            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
         )->first();
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);
