@@ -32,26 +32,6 @@ trait Authenticatable
     }
 
     /**
-     * Get the name of the login identifier for the user.
-     *
-     * @return string
-     */
-    public function getLoginIdentifierName()
-    {
-        return 'email';
-    }
-
-    /**
-     * Get the login identifier for the user.
-     *
-     * @return mixed
-     */
-    public function getLoginIdentifier()
-    {
-        return $this->{$this->getLoginIdentifierName()};
-    }
-
-    /**
      * Get the password for the user.
      *
      * @return string

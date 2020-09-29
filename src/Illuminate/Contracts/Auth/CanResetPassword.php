@@ -12,6 +12,20 @@ interface CanResetPassword
     public function getEmailForPasswordReset();
 
     /**
+     * Get the name of the unique password reset identifier for the user.
+     *
+     * @return string
+     */
+    public function getPasswordResetIdentifierName();
+
+    /**
+     * Get the unique password reset identifier for the user.
+     *
+     * @return mixed
+     */
+    public function getPasswordResetIdentifier();
+
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token

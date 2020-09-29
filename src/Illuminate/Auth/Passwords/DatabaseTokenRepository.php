@@ -91,7 +91,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
         $token = $this->createNewToken();
 
         $this->getTable()->insert($this->getPayload(
-            $user->getLoginIdentifierName(), $user->getLoginIdentifier(), $token
+            $user->getPasswordResetIdentifierName(), $user->getPasswordResetIdentifier(), $token
         ));
 
         return $token;
@@ -106,7 +106,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     protected function deleteExisting(CanResetPasswordContract $user)
     {
         return $this->getTable()->where(
-            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
+            $user->getPasswordResetIdentifierName(), $user->getPasswordResetIdentifier()
         )->delete();
     }
 
@@ -133,7 +133,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     public function exists(CanResetPasswordContract $user, $token)
     {
         $record = (array) $this->getTable()->where(
-            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
+            $user->getPasswordResetIdentifierName(), $user->getPasswordResetIdentifier()
         )->first();
 
         return $record &&
@@ -161,7 +161,7 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     public function recentlyCreatedToken(CanResetPasswordContract $user)
     {
         $record = (array) $this->getTable()->where(
-            $user->getLoginIdentifierName(), $user->getLoginIdentifier()
+            $user->getPasswordResetIdentifierName(), $user->getPasswordResetIdentifier()
         )->first();
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);

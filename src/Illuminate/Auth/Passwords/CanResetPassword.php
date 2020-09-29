@@ -17,6 +17,26 @@ trait CanResetPassword
     }
 
     /**
+     * Get the name of the unique password reset identifier for the user.
+     *
+     * @return string
+     */
+    public function getPasswordResetIdentifierName()
+    {
+        return 'email';
+    }
+
+    /**
+     * Get the unique password reset identifier for the user.
+     *
+     * @return mixed
+     */
+    public function getPasswordResetIdentifier()
+    {
+        return $this->{$this->getPasswordResetIdentifierName()};
+    }
+
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token
