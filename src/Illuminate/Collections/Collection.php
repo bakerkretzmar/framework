@@ -4,11 +4,12 @@ namespace Illuminate\Support;
 
 use ArrayAccess;
 use ArrayIterator;
+use Countable;
 use Illuminate\Support\Traits\EnumeratesValues;
 use Illuminate\Support\Traits\Macroable;
 use stdClass;
 
-class Collection implements ArrayAccess, Enumerable
+class Collection implements ArrayAccess, Countable, Enumerable
 {
     use EnumeratesValues, Macroable;
 
